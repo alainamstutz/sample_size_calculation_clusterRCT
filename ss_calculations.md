@@ -13,7 +13,8 @@ output:
 ---
 
 # Load packages
-```{r load packages, echo=TRUE, message=FALSE, warning=FALSE}
+
+```r
 library(tidyverse)
 library(readxl)
 library(writexl)
@@ -22,45 +23,14 @@ library(kableExtra)
 library(ggplot2)
 
 library(pwr)
-
 ```
 
 # Sample size for a binary outcome / individual randomized trial
-```{r, include=FALSE}
-# Define the parameters
-p_int <- 0.55 # Estimated proportion in control group
-p_cont <- 0.50 # Estimated proportion in intervention group
-alpha <- 0.05 # Significance level (usually 0.05 for a 95% confidence interval)
-power <- 0.80 # Desired power (usually 0.80 for 80% power, or 0.9)
 
-# calculate the sample size using pwr, two-sided (effect could go either way)
-sample_size_1arm <- pwr.2p.test(h = ES.h(p_int, p_cont), 
-                           sig.level = alpha, 
-                           power = power)
-sample_size <- sample_size_1arm$n * 2
-# print
-cat("Required Sample Size:", round(sample_size, 0))
-
-#####
-# Define the parameters for a "manual calculation"
-alpha <- 0.05 # Significance level 
-power <- 0.80 # Desired power 
-p_int <- 0.55 # Estimated proportion in control group
-p_cont <- 0.50 # Estimated proportion in intervention group
-
-Z_alpha_half <- qnorm(1 - alpha / 2) # translate into Z-distribution -> equals 0.975 (95% CI) 
-Z_beta <- qnorm(power)
-
-# calculate the sample size using the formula itself
-sample_size_1arm <- ((Z_alpha_half + Z_beta)^2 * (p_int * (1 - p_int) + p_cont * (1 - p_cont))) / (p_int - p_cont)^2
-sample_size <- sample_size_1arm * 2
-# print
-cat("Required sample size:", round(sample_size, 0))
-
-```
 
 # Sample size calculation for a continous outcome / individual randomized trial
-```{r}
+
+```r
 # Define the parameters
 alpha <- 0.05 # Significance level (usually 0.05 for a 95% confidence interval)
 power <- 0.80 # Desired power (usually 0.80 or 80% power)
@@ -78,7 +48,13 @@ sample_size_1arm <- pwr.t.test(d = effect_size,
 sample_size <- sample_size_1arm$n * 2
 # Print
 cat("Required sample size:", round(sample_size, 0))
+```
 
+```
+## Required sample size: 128
+```
+
+```r
 #####
 # Define the parameters for a "manual calculation"
 alpha <- 0.05 # Significance level
@@ -99,11 +75,15 @@ sample_size_1arm <- (2 * (sd^2) / delta^2) * ((Z_alpha_half + Z_beta)^2)
 sample_size <- sample_size_1arm * 2
 # Print the sample size
 cat("Required sample size:", round(sample_size, 0))
+```
 
+```
+## Required sample size: 126
 ```
 
 # Sample size calculation for a cluster randomized trial // continuous outcome
-```{r}
+
+```r
 # Define the parameters
 alpha <- 0.05 # Significance level 
 power <- 0.80 # Desired power
@@ -128,15 +108,25 @@ sample_size_1arm <- (2 * (sd^2) / delta^2) * ((Z_alpha_half + Z_beta)^2)
 sample_size <- sample_size_1arm * 2
 sample_size_cluster_ind <- sample_size * design_effect
 cat("Required sample size:", round(sample_size_cluster_ind, 0))
+```
 
+```
+## Required sample size: 187
+```
+
+```r
 # Number of clusters
 n_clusters <- sample_size_cluster_ind / cluster_size
 cat("Required clusters:", round(n_clusters, 0))
+```
 
+```
+## Required clusters: 4
 ```
 
 # Sample size calculation for a cluster randomized trial // binary outcome
-```{r}
+
+```r
 # Define the parameters
 alpha <- 0.05 # alpha level
 power <- 0.80 # power
@@ -158,15 +148,25 @@ sample_size <- sample_size_1arm * 2
 
 sample_size_cluster_ind <- sample_size * design_effect
 cat("Required sample size:", round(sample_size_cluster_ind, 0))
+```
 
+```
+## Required sample size: 4655
+```
+
+```r
 # Number of clusters
 n_clusters <- sample_size_cluster_ind / cluster_size
 cat("Required clusters:", round(n_clusters, 0))
+```
 
+```
+## Required clusters: 93
 ```
 
 # Sample size calculation for a clustered survey
-```{r}
+
+```r
 # Define the parameters
 confidence_level <- 0.95 # confidence level
 z <- qnorm(1 - (1 - confidence_level) / 2) # z statistic
@@ -183,4 +183,8 @@ sample_size <- ceiling((z * sqrt(prop * (1 - prop)) / d)^2 / deff)
 
 # Print
 cat("Required sample size:", sample_size)
+```
+
+```
+## Required sample size: 294
 ```
