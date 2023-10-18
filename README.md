@@ -1,2 +1,2 @@
-# sample_size_calculation_clusterRCT
+# sample size calculations
 Sample size calculations, focus on cluster RCTs
