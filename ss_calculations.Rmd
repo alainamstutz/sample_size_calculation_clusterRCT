@@ -171,22 +171,3 @@ cat("Required clusters:", round(n_clusters, 0))
 
 ```
 
-# Sample size calculation for a clustered survey
-```{r}
-# Define the parameters
-confidence_level <- 0.95 # confidence level
-z <- qnorm(1 - (1 - confidence_level) / 2) # z statistic
-d <- 0.05 # margin of error
-cluster_size <- 3 # Average cluster size (fixed in our case)
-icc <- 0.05 # Intracluster correlation coefficient
-prop <- 0.7 # Estimated target proportion/prevalence
-
-# Calculate design effect
-deff <- 1 + (cluster_size - 1) * icc # Design Effect
-
-# Calculate sample size
-sample_size <- ceiling((z * sqrt(prop * (1 - prop)) / d)^2 / deff)
-
-# Print
-cat("Required sample size:", sample_size)
-```

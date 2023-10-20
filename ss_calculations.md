@@ -89,29 +89,35 @@ alpha <- 0.05 # Significance level
 power <- 0.80 # Desired power
 mean_int <- 5 # Mean of the control group
 mean_cont <- 0 # Mean of the intervention group
-sd <- 10 # Estimated standard deviation of the outcome
-cluster_size <- 50 # Average cluster size
-icc <- 0.01 # Intracluster correlation coefficient
+sd <- 0.015 # Estimated standard deviation of the outcome
+cluster_size <- 2.4 # Average cluster size
+icc <- 0.015 # Intracluster correlation coefficient
 
 # Calculate the effect size
-delta <- abs(mean_int - mean_cont)
-
+#delta <- abs(mean_int - mean_cont)
+delta <- 0.006
 # Calculate the critical values for Z_alpha/2 and Z_beta
 Z_alpha_half <- qnorm(1 - alpha / 2)
 Z_beta <- qnorm(power)
-
 # Calculate the design effect (or Variance Inflation Factor (VIF))
 design_effect <- 1 + (cluster_size - 1) * icc
 
-# Calculate the total sample size (individual level) by inflating the SS for an individual RCT by the VIF
-sample_size_1arm <- (2 * (sd^2) / delta^2) * ((Z_alpha_half + Z_beta)^2)
-sample_size <- sample_size_1arm * 2
+# Calculate first the SS for an individual RCT and then inflate by the VIF
+sample_size_1arm_ind <- (2 * (sd^2) / delta^2) * ((Z_alpha_half + Z_beta)^2)
+sample_size_2arm_ind <- sample_size_1arm * 2
+# Inflate for any attrition rate?
+attrition <- 0.2
+sample_size_2arm_ind_attr <- sample_size_2arm_ind + sample_size_2arm_ind*attrition  
+# Inflate for any non-uptake rate?
+# Inflate for unequal cluster size?
+
+# Inflate for clustering
 sample_size_cluster_ind <- sample_size * design_effect
 cat("Required sample size:", round(sample_size_cluster_ind, 0))
 ```
 
 ```
-## Required sample size: 187
+## Required sample size: 128
 ```
 
 ```r
@@ -121,7 +127,7 @@ cat("Required clusters:", round(n_clusters, 0))
 ```
 
 ```
-## Required clusters: 4
+## Required clusters: 53
 ```
 
 # Sample size calculation for a cluster randomized trial // binary outcome
@@ -129,11 +135,11 @@ cat("Required clusters:", round(n_clusters, 0))
 ```r
 # Define the parameters
 alpha <- 0.05 # alpha level
-power <- 0.80 # power
-p_int <- 0.55 # Proportion of the binary outcome in the intervention group
+power <- 0.90 # power
+p_int <- 0.65 # Proportion of the binary outcome in the intervention group
 p_cont <- 0.50 # Proportion of the binary outcome in the control group
-cluster_size <- 50  # Average cluster size
-icc <- 0.01  # Intracluster correlation coefficient
+cluster_size <- 20  # Average cluster size
+icc <- 0.1  # Intracluster correlation coefficient
 
 # Calculate the design effect
 design_effect <- 1 + (cluster_size - 1) * icc
@@ -151,7 +157,7 @@ cat("Required sample size:", round(sample_size_cluster_ind, 0))
 ```
 
 ```
-## Required sample size: 4655
+## Required sample size: 1293
 ```
 
 ```r
@@ -161,30 +167,6 @@ cat("Required clusters:", round(n_clusters, 0))
 ```
 
 ```
-## Required clusters: 93
+## Required clusters: 65
 ```
 
-# Sample size calculation for a clustered survey
-
-```r
-# Define the parameters
-confidence_level <- 0.95 # confidence level
-z <- qnorm(1 - (1 - confidence_level) / 2) # z statistic
-d <- 0.05 # margin of error
-cluster_size <- 3 # Average cluster size (fixed in our case)
-icc <- 0.05 # Intracluster correlation coefficient
-prop <- 0.7 # Estimated target proportion/prevalence
-
-# Calculate design effect
-deff <- 1 + (cluster_size - 1) * icc # Design Effect
-
-# Calculate sample size
-sample_size <- ceiling((z * sqrt(prop * (1 - prop)) / d)^2 / deff)
-
-# Print
-cat("Required sample size:", sample_size)
-```
-
-```
-## Required sample size: 294
-```
